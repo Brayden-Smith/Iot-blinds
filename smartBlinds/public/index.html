@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Blinds Control</title>
+</head>
+<body>
+<h1>Smart Blinds Control Panel</h1>
+
+<h2>Sensor Readings</h2>
+<p>Light Intensity (LDR): <span id="ldrValue">--</span></p>
+<p>Voltage: <span id="voltageValue">--</span> V</p>
+<p>Motor is on: <span id="enabledValue">--</span></p>
+<p>Blinds are open: <span id="directionValue">--</span></p>
+
+<hr>
+
+<h2>Blind Controls </h2>
+<h3>Turn Blinds On?</h3>
+<button onclick="setBlinds(true)">On</button>
+<button onclick="setBlinds(false)">Off</button>
+
+<hr>
+<h3>Turn The Blinds</h3>
+<button onclick="turnBlinds(true)">Turn</button>
+
+<script>
+    //TODO: definitely add some CSS to hide turn button till blinds are active ! ! !
+    // Fetch data from server
+    async function fetchData() {
+        const sensorResponse = await fetch('/sensor');
+        const sensorData = await sensorResponse.json();
+
+        const motorResponse = await fetch('/motor');
+        const motorData = await motorResponse.json();
+
+        document.getElementById('ldrValue').innerText = sensorData.ldr || 'no reading...';
+        document.getElementById('voltageValue').innerText = sensorData.voltage || 'no reading...';
+        document.getElementById('directionValue').innerText = motorData.direction || 'not open';
+        document.getElementById('enabledValue').innerText = motorData.enabled || 'not enabled';
+    }
+
+    // Set blinds on/off
+    async function setBlinds(state) {
+            const response = await fetch('/blinds/enabled', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({state: state})
+            });
+            if (response.ok) {
+                console.log("power went thru!");
+            }
+    }
+
+    // trigger signal to turn blinds
+    async function turnBlinds(state) {
+        const response = await fetch('/blinds/turn', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({state: state})
+        });
+        if (response.ok) {
+            console.log("turn went thru!");
+        }
+    }
+
+    // Auto-refresh data every 5 seconds
+    setInterval(fetchData, 5000);
+    window.onload = fetchData();
+</script>
+</body>
+</html>
