@@ -74,7 +74,7 @@ void loop() {
   lcd.print(String("ldr_data: ") + ldr_data);
 
 
-  delay(1000);
+  delay(100);
   if(Firebase.ready() && signupOK) {
     if(Firebase.RTDB.setInt(&fbdo, "Sensor/ldr_data", ldr_data)) {
       Serial.print(ldr_data);
@@ -82,4 +82,5 @@ void loop() {
     }
   }
   delay(1000);
+
 }
