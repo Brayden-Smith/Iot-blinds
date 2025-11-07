@@ -4,235 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Blinds Control</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-            color: #333;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        h1 {
-            text-align: center;
-            color: white;
-            font-size: 2.5rem;
-            margin-bottom: 40px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-            font-weight: 600;
-        }
-
-        .section {
-            background: white;
-            border-radius: 16px;
-            padding: 30px;
-            margin-bottom: 25px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .section:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        h2 {
-            color: #667eea;
-            font-size: 1.8rem;
-            margin-bottom: 20px;
-            border-bottom: 3px solid #667eea;
-            padding-bottom: 10px;
-        }
-
-        h3 {
-            color: #764ba2;
-            font-size: 1.3rem;
-            margin-bottom: 15px;
-            margin-top: 20px;
-        }
-
-        .sensor-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .sensor-card {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            transition: transform 0.3s ease;
-        }
-
-        .sensor-card:hover {
-            transform: scale(1.05);
-        }
-
-        .sensor-label {
-            font-size: 0.9rem;
-            color: #666;
-            margin-bottom: 10px;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .sensor-value {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #667eea;
-        }
-
-        .button-group {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            margin-top: 15px;
-        }
-
-        button {
-            flex: 1;
-            min-width: 120px;
-            padding: 15px 30px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        button:active {
-            transform: translateY(0);
-        }
-
-        .btn-on {
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-            color: white;
-        }
-
-        .btn-on:hover {
-            background: linear-gradient(135deg, #0d7a70 0%, #2dd169 100%);
-        }
-
-        .btn-off {
-            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
-            color: white;
-        }
-
-        .btn-off:hover {
-            background: linear-gradient(135deg, #c92a3d 0%, #d14d38 100%);
-        }
-
-        .btn-turn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .btn-turn:hover {
-            background: linear-gradient(135deg, #5568d3 0%, #653d8f 100%);
-        }
-
-        .btn-turn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            opacity: 0.6;
-        }
-
-        .status-indicator {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            margin-right: 8px;
-            animation: pulse 2s infinite;
-        }
-
-        .status-true {
-            background-color: #38ef7d;
-        }
-
-        .status-false {
-            background-color: #eb3349;
-        }
-
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.5;
-            }
-        }
-
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2rem;
-            }
-
-            .section {
-                padding: 20px;
-            }
-
-            .sensor-grid {
-                grid-template-columns: 1fr;
-            }
-
-            button {
-                width: 100%;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>🏠 Smart Blinds Control Panel</h1>
+        <h1>Smart Blinds Control Panel</h1>
 
-        <div class="section">
-            <h2>📊 Sensor Readings</h2>
-            <div class="sensor-grid">
-                <div class="sensor-card">
-                    <div class="sensor-label">Light Intensity (LDR)</div>
-                    <div class="sensor-value" id="ldrValue">--</div>
-                </div>
-                <div class="sensor-card">
-                    <div class="sensor-label">Voltage</div>
-                    <div class="sensor-value" id="voltageValue">--</div>
-                </div>
-                <div class="sensor-card">
-                    <div class="sensor-label">Mode</div>
-                    <div class="sensor-value" id="manualValue">--</div>
-                </div>
-                <div class="sensor-card">
-                    <div class="sensor-label">Motor Turn</div>
-                    <div class="sensor-value" id="turnValue">--</div>
+        <div class="sections-row">
+            <div class="section">
+                <h2>Sensor Readings</h2>
+                <div class="sensor-grid">
+                    <div class="sensor-card">
+                        <div class="sensor-label">Light Intensity (LDR)</div>
+                        <div class="sensor-value" id="ldrValue">--</div>
+                    </div>
+                    <div class="sensor-card">
+                        <div class="sensor-label">Voltage</div>
+                        <div class="sensor-value" id="voltageValue">--</div>
+                    </div>
+                    <div class="sensor-card">
+                        <div class="sensor-label">Mode</div>
+                        <div class="sensor-value" id="manualValue">--</div>
+                    </div>
+                    <div class="sensor-card">
+                        <div class="sensor-label">Motor Turn</div>
+                        <div class="sensor-value" id="turnValue">--</div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="section">
-            <h2>🎛️ Blind Controls</h2>
+            <div class="section">
+                <h2>Blind Controls</h2>
             <h3>Mode Control</h3>
             <div class="button-group">
                 <button class="btn-on" onclick="setMode(false)">☀️ Light Mode</button>
@@ -241,25 +43,26 @@
 
             <h3>Blind Movement</h3>
             <div class="button-group">
-                <button class="btn-on" id="turnButtonTrue" onclick="turnBlinds(true)">✓ Set Turn True</button>
-                <button class="btn-off" id="turnButtonFalse" onclick="turnBlinds(false)">✗ Set Turn False</button>
+                <button class="btn-on" id="turnButtonTrue" onclick="turnBlinds(true)">Set Turn True</button>
+                <button class="btn-off" id="turnButtonFalse" onclick="turnBlinds(false)">Set Turn False</button>
+            </div>
             </div>
         </div>
 
-        <div class="section">
-            <h2>🧪 Create New Firebase Node</h2>
+        <div class="section" style="display: none;">
+            <h2>Create New Firebase Node</h2>
             <p style="color: #666; margin-bottom: 20px;">Use this form to create new variables/nodes in Firebase</p>
             
             <div style="display: grid; gap: 15px;">
                 <div>
-                    <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #667eea;">Firebase Path:</label>
+                    <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #4A90E2;">Firebase Path:</label>
                     <input type="text" id="nodePath" placeholder="e.g., Settings/autoMode" 
                            style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem;">
                     <small style="color: #666;">Path where the node will be created (e.g., "MyNode" or "Settings/value")</small>
                 </div>
                 
                 <div>
-                    <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #667eea;">Data Type:</label>
+                    <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #4A90E2;">Data Type:</label>
                     <select id="nodeType" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem;">
                         <option value="boolean">Boolean (true/false)</option>
                         <option value="number">Number</option>
@@ -270,13 +73,13 @@
                 </div>
                 
                 <div>
-                    <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #667eea;">Value:</label>
+                    <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #4A90E2;">Value:</label>
                     <input type="text" id="nodeValue" placeholder="Enter value (e.g., true, 42, 'Hello', etc.)" 
                            style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem;">
                     <small style="color: #666;">For objects/arrays, use JSON format: {"key": "value"} or [1,2,3]</small>
                 </div>
                 
-                <button class="btn-turn" onclick="createNode()" style="margin-top: 10px;">✨ Create Node</button>
+                <button class="btn-turn" onclick="createNode()" style="margin-top: 10px;">Create Node</button>
                 
                 <div id="createResult" style="margin-top: 15px; padding: 15px; border-radius: 8px; display: none;"></div>
             </div>
@@ -301,17 +104,37 @@
         const turn = motorData.turn;
         
         // Display mode: true = Manual Mode, false = Light Mode
-        const modeText = (manual === true || manual === 'true') ? '👤 Manual' : '☀️ Light';
+        const modeText = (manual === true || manual === 'true') ? 'Manual' : 'Light';
         document.getElementById('manualValue').innerText = modeText;
         document.getElementById('turnValue').innerText = formatBoolean(turn);
+        
+        // Enable/disable turn buttons based on mode
+        // In light mode (manual = false), disable buttons (auto-control is active)
+        // In manual mode (manual = true), enable buttons (user can control)
+        const turnButtonTrue = document.getElementById('turnButtonTrue');
+        const turnButtonFalse = document.getElementById('turnButtonFalse');
+        
+        if (manual === true || manual === 'true') {
+            // Manual mode - enable buttons
+            turnButtonTrue.disabled = false;
+            turnButtonTrue.style.opacity = '1';
+            turnButtonFalse.disabled = false;
+            turnButtonFalse.style.opacity = '1';
+        } else {
+            // Light mode - disable buttons (auto-control)
+            turnButtonTrue.disabled = true;
+            turnButtonTrue.style.opacity = '0.6';
+            turnButtonFalse.disabled = true;
+            turnButtonFalse.style.opacity = '0.6';
+        }
     }
 
     // Format boolean values for display
     function formatBoolean(value) {
         if (value === true || value === 'true' || value === 1) {
-            return '✓ On';
+            return 'On';
         } else if (value === false || value === 'false' || value === 0) {
-            return '✗ Off';
+            return 'Off';
         } else {
             return '--';
         }
@@ -356,7 +179,7 @@
             resultDiv.style.display = 'block';
             resultDiv.style.background = '#fee';
             resultDiv.style.color = '#c33';
-            resultDiv.innerHTML = '❌ Please enter a Firebase path!';
+            resultDiv.innerHTML = 'Error: Please enter a Firebase path!';
             return;
         }
         
@@ -364,7 +187,7 @@
             resultDiv.style.display = 'block';
             resultDiv.style.background = '#fee';
             resultDiv.style.color = '#c33';
-            resultDiv.innerHTML = '❌ Please enter a value!';
+            resultDiv.innerHTML = 'Error: Please enter a value!';
             return;
         }
         
@@ -387,7 +210,7 @@
             resultDiv.style.display = 'block';
             resultDiv.style.background = '#fee';
             resultDiv.style.color = '#c33';
-            resultDiv.innerHTML = `❌ Error parsing value: ${error.message}`;
+            resultDiv.innerHTML = `Error parsing value: ${error.message}`;
             return;
         }
         
@@ -404,18 +227,18 @@
                 resultDiv.style.display = 'block';
                 resultDiv.style.background = '#efe';
                 resultDiv.style.color = '#3c3';
-                resultDiv.innerHTML = `✅ Success! Created node at "${path}" with value: ${JSON.stringify(value)}`;
+                resultDiv.innerHTML = `Success! Created node at "${path}" with value: ${JSON.stringify(value)}`;
             } else {
                 resultDiv.style.display = 'block';
                 resultDiv.style.background = '#fee';
                 resultDiv.style.color = '#c33';
-                resultDiv.innerHTML = `❌ Error: ${result.error || 'Unknown error'}`;
+                resultDiv.innerHTML = `Error: ${result.error || 'Unknown error'}`;
             }
         } catch (error) {
             resultDiv.style.display = 'block';
             resultDiv.style.background = '#fee';
             resultDiv.style.color = '#c33';
-            resultDiv.innerHTML = `❌ Network error: ${error.message}`;
+            resultDiv.innerHTML = `Network error: ${error.message}`;
         }
     }
 
