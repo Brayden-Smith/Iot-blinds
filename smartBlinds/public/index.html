@@ -221,27 +221,28 @@
                     <div class="sensor-value" id="voltageValue">--</div>
                 </div>
                 <div class="sensor-card">
-                    <div class="sensor-label">Motor Status</div>
-                    <div class="sensor-value" id="enabledValue">--</div>
+                    <div class="sensor-label">Mode</div>
+                    <div class="sensor-value" id="manualValue">--</div>
                 </div>
                 <div class="sensor-card">
-                    <div class="sensor-label">Blinds Status</div>
-                    <div class="sensor-value" id="directionValue">--</div>
+                    <div class="sensor-label">Motor Turn</div>
+                    <div class="sensor-value" id="turnValue">--</div>
                 </div>
             </div>
         </div>
 
         <div class="section">
             <h2>🎛️ Blind Controls</h2>
-            <h3>Power Control</h3>
+            <h3>Mode Control</h3>
             <div class="button-group">
-                <button class="btn-on" onclick="setBlinds(true)">⚡ Turn On</button>
-                <button class="btn-off" onclick="setBlinds(false)">⏻ Turn Off</button>
+                <button class="btn-on" onclick="setMode(false)">☀️ Light Mode</button>
+                <button class="btn-off" onclick="setMode(true)">👤 Manual Mode</button>
             </div>
 
             <h3>Blind Movement</h3>
             <div class="button-group">
-                <button class="btn-turn" id="turnButton" onclick="turnBlinds(true)">🔄 Turn Blinds</button>
+                <button class="btn-on" id="turnButtonTrue" onclick="turnBlinds(true)">✓ Set Turn True</button>
+                <button class="btn-off" id="turnButtonFalse" onclick="turnBlinds(false)">✗ Set Turn False</button>
             </div>
         </div>
 
@@ -292,25 +293,17 @@
         const motorData = await motorResponse.json();
 
         // Display sensor data
-        document.getElementById('ldrValue').innerText = sensorData.ldr || '--';
-        document.getElementById('voltageValue').innerText = sensorData.voltage || '--';
+        document.getElementById('ldrValue').innerText = sensorData.ldr || 0;
+        document.getElementById('voltageValue').innerText = sensorData.voltage || 0.0;
         
         // Format boolean values nicely
-        const enabled = motorData.enabled;
-        const direction = motorData.direction;
+        const manual = motorData.manual;
+        const turn = motorData.turn;
         
-        document.getElementById('enabledValue').innerText = formatBoolean(enabled);
-        document.getElementById('directionValue').innerText = formatBoolean(direction);
-        
-        // Show/hide turn button based on motor enabled state
-        const turnButton = document.getElementById('turnButton');
-        if (enabled === true || enabled === 'true') {
-            turnButton.disabled = false;
-            turnButton.style.opacity = '1';
-        } else {
-            turnButton.disabled = true;
-            turnButton.style.opacity = '0.6';
-        }
+        // Display mode: true = Manual Mode, false = Light Mode
+        const modeText = (manual === true || manual === 'true') ? '👤 Manual' : '☀️ Light';
+        document.getElementById('manualValue').innerText = modeText;
+        document.getElementById('turnValue').innerText = formatBoolean(turn);
     }
 
     // Format boolean values for display
@@ -324,15 +317,15 @@
         }
     }
 
-    // Set blinds on/off
-    async function setBlinds(state) {
+    // Set mode: true = Manual Mode, false = Light Mode
+    async function setMode(isManual) {
         const response = await fetch('/blinds/isManual', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({state: state})
+            body: JSON.stringify({state: isManual})
         });
         if (response.ok) {
-            console.log("Power command sent!");
+            console.log("Mode command sent!");
             // Refresh data after a short delay
             setTimeout(fetchData, 500);
         }

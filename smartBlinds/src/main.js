@@ -2,6 +2,8 @@
 const express = require('express');
 var admin = require("firebase-admin");
 var serviceAccount = require('../smart-blinds-rtdb-firebase-adminsdk-fbsvc-4d9a9ac6d0.json');
+
+
 //connect to db
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -31,18 +33,18 @@ app.get('/sensor', async (req, res) => {
 
 app.get('/motor', async (req, res) => {
     const turn = await db.ref('Motor/turn').once('value');
-    const enabled = await db.ref('Motor/enabled').once('value');
+    const manual = await db.ref('Motor/manual').once('value');
     res.json({
-        direction: turn.val(),
-        enabled: enabled.val()
+        turn: turn.val(),
+        manual: manual.val()
     });
     console.log("Motor data fetched");
 });
 
-// send bool data from app to DB: do we want to turn on or off?
+// send bool data from app to DB: set manual mode (true) or light mode (false)
 app.post('/blinds/isManual', async (req, res) => {
-    const { state } = req.body; //state: true/false
-    await db.ref('/Motor/enabled').set(state);
+    const { state } = req.body; //state: true = manual mode, false = light mode
+    await db.ref('/Motor/manual').set(state);
     res.json({ success: true });
 });
 
@@ -52,6 +54,7 @@ app.post('/blinds/turn', async (req, res) => {
     const { state } = req.body; //state: true/false
     await db.ref('/Motor/turn').set(state);
     res.json({ success: true });
+    console.log("Turn command sent!");
 });
 
 // EXAMPLE: How to create new nodes with different data types
