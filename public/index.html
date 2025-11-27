@@ -107,8 +107,7 @@
         // Display mode: true = Manual Mode, false = Light Mode
         const modeText = (manual === true || manual === 'true') ? 'Manual' : 'Light';
         document.getElementById('manualValue').innerText = modeText;
-        document.getElementById('turnValue').innerText = formatBoolean(turnCW);
-        document.getElementById('turnValue').innerText = formatBoolean(turnCounterCW);
+        document.getElementById('turnValue').innerText = turnCW ? 'Opening' : (turnCounterCW ? 'Closing' : 'Stopped');
         
         // Enable/disable turn buttons based on mode
         // In light mode (manual = false), disable buttons (auto-control is active)
@@ -128,17 +127,6 @@
             turnButtonTrue.style.opacity = '0.6';
             turnButtonFalse.disabled = true;
             turnButtonFalse.style.opacity = '0.6';
-        }
-    }
-
-    // Format boolean values for display
-    function formatBoolean(value) {
-        if (value === true) {
-            return 'On';
-        } else if (value === false) {
-            return 'Off';
-        } else {
-            return '--';
         }
     }
 
