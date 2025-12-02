@@ -31,32 +31,38 @@ const ambientToggle = document.getElementById('ambientToggle');
 const manualControls = document.getElementById('manualControls');
 const statusText = document.getElementById('statusText');
 
-// Database References
-const targetRef = ref(db, 'Motor/targetPosition');
-const ambientRef = ref(db, 'Motor/ambientMode');
+// Database References for Motor1
+const targetRefMotor1 = ref(db, 'Motor/targetPosition');
+const ambientRefMotor1 = ref(db, 'Motor/ambientMode');
+
+// Database References for Motor2
+const targetRefMotor2 = ref(db, 'Motor2/targetPosition');
+const ambientRefMotor2 = ref(db, 'Motor2/ambientMode');
 
 // ------------------------------------------------
 // 1. LISTEN TO DATA (Read from Firebase)
 // ------------------------------------------------
 
-// Listen for Position changes
-onValue(targetRef, (snapshot) => {
+// list for position changes for any motor
+function handleMotorUpdate(motor, snapshot) {
   const val = snapshot.val();
-  // Default to 0 if null
   const position = val !== null ? val : 0;
 
-  // Update the visual slider
+  //update params & ui text
   slider.value = position;
   percentageDisplay.innerText = position + '%';
 
-  // Update status text only if ambient is off
   if (!ambientToggle.checked) {
-    statusText.innerText = 'Current Position: ' + position + '%';
+    statusText.innerText = `${motor} Position: ${position}%`;
   }
-});
+}
+
+// Listen for both motors in one line each
+onValue(targetRefMotor1, snap => handleMotorUpdate(targetRefMotor1, snap));
+onValue(targetRefMotor2, snap => handleMotorUpdate(targetRefMotor2, snap));
 
 // Listen for Ambient Mode changes
-onValue(ambientRef, (snapshot) => {
+function handleAmbientUpdate(motor, snapshot) {
   const isAmbient = snapshot.val();
 
   // Update the toggle switch visually
@@ -71,7 +77,10 @@ onValue(ambientRef, (snapshot) => {
     manualControls.classList.remove('disabled');
     statusText.innerText = 'Manual Control Active';
   }
-});
+}
+
+onValue(ambientRefMotor1, snap => handleAmbientUpdate(ambientRefMotor1, snap));
+onValue(ambientRefMotor2, snap => handleAmbientUpdate(ambientRefMotor2, snap));
 
 // ------------------------------------------------
 // 2. SEND DATA (Write to Firebase)
@@ -79,7 +88,8 @@ onValue(ambientRef, (snapshot) => {
 
 // Slider: Send data only when user releases the handle ('change')
 slider.addEventListener('change', (e) => {
-  set(targetRef, parseInt(e.target.value));
+  set(targetRefMotor1, parseInt(e.target.value));
+  set(targetRefMotor2, parseInt(e.target.value));
 });
 
 // Slider: Update the text number while dragging ('input') - Visual only
@@ -89,5 +99,7 @@ slider.addEventListener('input', (e) => {
 
 // Toggle: Send data immediately when clicked
 ambientToggle.addEventListener('change', (e) => {
-  set(ambientRef, e.target.checked);
+  set(ambientRefMotor1, e.target.checked);
+  set(ambientRefMotor2, e.target.checked);
 });
+
