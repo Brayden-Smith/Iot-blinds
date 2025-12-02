@@ -7,8 +7,8 @@
 #include "addons/RTDBHelper.h"
 
 // S E T U P   &   C O N F I G -------------------------------------
-#define WIFI_SSID "ADD NETWORK!"        // ADD WIFI CREDS !!
-#define WIFI_PASSWORD "ADD PSWD!"
+#define WIFI_SSID "JC"        // ADD WIFI CREDS !!
+#define WIFI_PASSWORD "12345678"
 #define API_KEY "AIzaSyC46BgxFQAMZo9Ibco7ZgtrDIn02ojc6Wg"
 #define DATABASE_URL "https://smart-blinds-rtdb-default-rtdb.firebaseio.com/"
 
@@ -151,4 +151,5 @@ void loop() {
     Serial.println("Move Complete. Updating DB.");
     Firebase.RTDB.setInt(&fbdo, PATH_CURRENT, currentPercent);
   }
+}
 }
